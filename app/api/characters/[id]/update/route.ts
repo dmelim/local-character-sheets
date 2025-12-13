@@ -83,7 +83,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     setByPath(character.data, update.path, update.value);
   }
 
-  if (typeof body.name === "string" && body.name.trim()) {
+  if (typeof body.name === "string") {
     const name = body.name.trim();
     character.name = name;
     setByPath(character.data, "identity.characterName", name);

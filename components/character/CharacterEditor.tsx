@@ -2,25 +2,35 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Character } from "@/lib/character-types";
-import { getFieldsBySection, getSections } from "@/lib/character-schema";
-import { getByPath, setByPath } from "@/lib/path-utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { RenameCharacterDialog } from "./RenameCharacterDialog";
-import { DeleteCharacterDialog } from "./DeleteCharacterDialog";
-import { Section } from "./Section";
-import { FieldRenderer } from "./FieldRenderer";
 import { ArrowLeft } from "lucide-react";
+import { Character } from "@/lib/character-types";
+import { setByPath } from "@/lib/path-utils";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import type { OnFieldChange } from "./sections/types";
+import { DeleteCharacterDialog } from "./DeleteCharacterDialog";
+import { RenameCharacterDialog } from "./RenameCharacterDialog";
+import { AbilityScoresSection } from "./sections/AbilityScoresSection";
+import { ArmorHealthSurvivalSection } from "./sections/ArmorHealthSurvivalSection";
+import { AttunementSection } from "./sections/AttunementSection";
+import { BackstorySection } from "./sections/BackstorySection";
+import { ClassFeaturesSection } from "./sections/ClassFeaturesSection";
+import { EquipmentCoinsSection } from "./sections/EquipmentCoinsSection";
+import { FeatsSection } from "./sections/FeatsSection";
+import { IdentitySection } from "./sections/IdentitySection";
+import { LanguagesSection } from "./sections/LanguagesSection";
+import { PreparedSpellsSection } from "./sections/PreparedSpellsSection";
+import { ProficienciesSection } from "./sections/ProficienciesSection";
+import { SavingThrowsSection } from "./sections/SavingThrowsSection";
+import { SkillsSection } from "./sections/SkillsSection";
+import { SpeciesTraitsSection } from "./sections/SpeciesTraitsSection";
+import { SpellcastingSummarySection } from "./sections/SpellcastingSummarySection";
+import { SpellSlotsSection } from "./sections/SpellSlotsSection";
+import { AppearanceSection } from "./sections/AppearanceSection";
+import { WeaponsSection } from "./sections/WeaponsSection";
 
 type CharacterEditorProps = {
   initialCharacter: Character;
-};
-
-type PendingUpdate = {
-  path: string;
-  value: unknown;
 };
 
 type SaveStatus = "idle" | "saving" | "saved" | "error" | "stale";
@@ -28,77 +38,60 @@ type SaveStatus = "idle" | "saving" | "saved" | "error" | "stale";
 export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
   const router = useRouter();
   const [character, setCharacter] = React.useState<Character>(initialCharacter);
-  const [pendingUpdates, setPendingUpdates] = React.useState<PendingUpdate[]>(
-    []
-  );
+  const [pending, setPending] = React.useState<Record<string, unknown>>({});
   const [pendingName, setPendingName] = React.useState<string | null>(null);
   const [status, setStatus] = React.useState<SaveStatus>("idle");
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
-  // Reset local state if the initial character changes (navigate between ids without reload).
   React.useEffect(() => {
     setCharacter(initialCharacter);
-    setPendingUpdates([]);
+    setPending({});
     setPendingName(null);
     setStatus("idle");
     setErrorMessage(null);
   }, [initialCharacter]);
 
-  const handleFieldChange = (path: string, value: unknown) => {
+  const handleFieldChange: OnFieldChange = (path, value) => {
     setCharacter((prev) => {
-      const next: Character = {
-        ...prev,
-        data: { ...prev.data },
-      };
+      const next: Character = { ...prev, data: { ...prev.data } };
       setByPath(next.data, path, value);
-
       if (path === "identity.characterName" && typeof value === "string") {
         next.name = value;
       }
-
       return next;
     });
 
     if (path === "identity.characterName" && typeof value === "string") {
       setPendingName(value);
-      // Do not enqueue a separate data update for the name field;
-      // the server will keep data.identity.characterName in sync.
-      return;
     }
 
-    setPendingUpdates((prev) => {
-      const existingIndex = prev.findIndex((u) => u.path === path);
-      const update: PendingUpdate = { path, value };
-      if (existingIndex >= 0) {
-        const copy = [...prev];
-        copy[existingIndex] = update;
-        return copy;
-      }
-      return [...prev, update];
-    });
+    setPending((prev) => ({ ...prev, [path]: value }));
   };
 
-  // Debounced autosave effect.
   React.useEffect(() => {
-    if (pendingUpdates.length === 0 && !pendingName) {
-      return;
-    }
+    const hasPending = Object.keys(pending).length > 0 || pendingName != null;
+    if (!hasPending) return;
 
     setStatus("saving");
     setErrorMessage(null);
 
     const timeout = setTimeout(async () => {
-      const body = {
-        expectedVersion: character.version,
-        name: pendingName ?? undefined,
-        updates: pendingUpdates,
-      };
+      const snapshot = pending;
+      const snapshotName = pendingName;
+      const updates = Object.entries(snapshot).map(([path, value]) => ({
+        path,
+        value,
+      }));
 
       try {
         const res = await fetch(`/api/characters/${character.id}/update`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify({
+            expectedVersion: character.version,
+            name: snapshotName ?? undefined,
+            updates,
+          }),
         });
 
         if (!res.ok) {
@@ -106,14 +99,14 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
             setStatus("stale");
             setErrorMessage("Changes were stale. Reloading latest data...");
 
-            // Reload character from server to resolve version mismatch.
             const reloadRes = await fetch(`/api/characters/${character.id}`);
             if (!reloadRes.ok) {
               throw new Error("Failed to reload character after conflict");
             }
+
             const fresh = (await reloadRes.json()) as Character;
             setCharacter(fresh);
-            setPendingUpdates([]);
+            setPending({});
             setPendingName(null);
             setStatus("idle");
             setErrorMessage(
@@ -137,8 +130,16 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
           updatedAt: data.updatedAt,
         }));
 
-        setPendingUpdates([]);
-        setPendingName(null);
+        setPending((prev) => {
+          const next = { ...prev };
+          for (const [path, value] of Object.entries(snapshot)) {
+            if (next[path] === value) {
+              delete next[path];
+            }
+          }
+          return next;
+        });
+        setPendingName((prev) => (prev === snapshotName ? null : prev));
         setStatus("saved");
       } catch (error: any) {
         setStatus("error");
@@ -147,13 +148,7 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [character.id, character.version, pendingUpdates, pendingName]);
-
-  const sections = getSections();
-  const abilitySectionName = "Ability Scores";
-  const abilityScoreFields = getFieldsBySection(abilitySectionName).filter((field) =>
-    field.path.endsWith(".score"),
-  );
+  }, [character.id, character.version, pending, pendingName]);
 
   const statusLabel = (() => {
     if (status === "saving") return "Saving...";
@@ -198,6 +193,7 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
             />
           </div>
         </div>
+
         <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-600 dark:text-zinc-400">
           <span>ID: {character.id}</span>
           <Separator orientation="vertical" className="h-4 w-px" />
@@ -209,6 +205,7 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
             </>
           ) : null}
         </div>
+
         {errorMessage ? (
           <p className="mt-1 text-xs text-red-600 dark:text-red-400">
             {errorMessage}
@@ -216,68 +213,85 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
         ) : null}
       </header>
 
-      <ScrollArea className="flex-1 rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
+      <div>
         <div className="space-y-6">
-          {abilityScoreFields.length > 0 ? (
-            <section className="space-y-3">
-              <div>
-                <h2 className="text-lg font-semibold">Ability Scores</h2>
-                <Separator className="mt-1" />
-              </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {abilityScoreFields.map((field) => {
-                  const rawScore = getByPath(character.data, field.path);
-                  const score = typeof rawScore === "number" ? rawScore : null;
-                  const modifier =
-                    typeof score === "number"
-                      ? Math.floor((score - 10) / 2)
-                      : null;
-                  const modifierLabel =
-                    typeof modifier === "number"
-                      ? `${modifier >= 0 ? "+" : ""}${modifier}`
-                      : "—";
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+            <IdentitySection
+              character={character}
+              onFieldChange={handleFieldChange}
+            />
+            <ArmorHealthSurvivalSection
+              character={character}
+              onFieldChange={handleFieldChange}
+            />
+          </div>
 
-                  return (
-                    <div
-                      key={field.path}
-                      className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 px-3 py-2 dark:border-zinc-800"
-                    >
-                      <div className="flex-1">
-                        <FieldRenderer
-                          field={field}
-                          value={rawScore}
-                          onChange={(value) => handleFieldChange(field.path, value)}
-                        />
-                      </div>
-                      <div className="min-w-[3rem] rounded-md bg-zinc-100 px-2 py-1 text-center text-sm font-semibold tabular-nums text-zinc-900 dark:bg-zinc-900 dark:text-zinc-50">
-                        {modifierLabel}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          ) : null}
-
-          {sections
-            .filter((sectionName) => sectionName !== abilitySectionName)
-            .map((sectionName) => (
-              <Section
-                key={sectionName}
-                title={sectionName}
-              >
-                {getFieldsBySection(sectionName).map((field) => (
-                  <FieldRenderer
-                    key={field.path}
-                    field={field}
-                    value={getByPath(character.data, field.path)}
-                    onChange={(value) => handleFieldChange(field.path, value)}
-                  />
-                ))}
-              </Section>
-            ))}
+          <AbilityScoresSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <SavingThrowsSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <SkillsSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <WeaponsSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <ClassFeaturesSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <SpeciesTraitsSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <FeatsSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <ProficienciesSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <SpellcastingSummarySection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <SpellSlotsSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <PreparedSpellsSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <AppearanceSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <BackstorySection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <LanguagesSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <EquipmentCoinsSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
+          <AttunementSection
+            character={character}
+            onFieldChange={handleFieldChange}
+          />
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }
