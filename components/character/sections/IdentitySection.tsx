@@ -71,6 +71,19 @@ export function IdentitySection({
           width="md"
         />
         <NumberField
+          label="Speed"
+          value={typeof speed === "number" ? speed : null}
+          onChange={(value) => onFieldChange("core.speed", value)}
+          width="sm"
+        />
+
+        <TextField
+          label="Size"
+          value={typeof size === "string" ? size : ""}
+          onChange={(value) => onFieldChange("core.size", value)}
+          width="xs"
+        />
+        <NumberField
           label="Level"
           value={typeof level === "number" ? level : null}
           onChange={(value) => onFieldChange("identity.level", value)}
@@ -91,20 +104,6 @@ export function IdentitySection({
           label="Heroic Inspiration"
           checked={Boolean(heroicInspiration)}
           onChange={(checked) => onFieldChange("inspiration.heroic", checked)}
-        />
-
-        <NumberField
-          label="Speed"
-          value={typeof speed === "number" ? speed : null}
-          onChange={(value) => onFieldChange("core.speed", value)}
-          width="sm"
-        />
-
-        <TextField
-          label="Size"
-          value={typeof size === "string" ? size : ""}
-          onChange={(value) => onFieldChange("core.size", value)}
-          width="xs"
         />
       </div>
     </section>
