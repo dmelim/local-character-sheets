@@ -59,7 +59,7 @@ export function ArmorHealthSurvivalSection({
           <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             HP
           </h3>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="flex gap-5">
             <NumberField
               label="Current HP"
               value={typeof hpCurrent === "number" ? hpCurrent : null}
@@ -86,7 +86,7 @@ export function ArmorHealthSurvivalSection({
           <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Hit Dice
           </h3>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="flex gap-5">
             <TextField
               label="Hit Dice Max"
               value={typeof hitDiceMax === "string" ? hitDiceMax : ""}

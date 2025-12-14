@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { OnFieldChange } from "./sections/types";
 import { DeleteCharacterDialog } from "./DeleteCharacterDialog";
+import { LongRestDialog } from "./LongRestDialog";
 import { RenameCharacterDialog } from "./RenameCharacterDialog";
 import { AbilityScoresSection } from "./sections/AbilityScoresSection";
 import { ArmorHealthSurvivalSection } from "./sections/ArmorHealthSurvivalSection";
@@ -163,7 +164,7 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
   })();
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <header className="flex flex-col gap-2 border-b border-zinc-200 pb-2 dark:border-zinc-800">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -179,6 +180,10 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
             </h1>
           </div>
           <div className="flex gap-2">
+            <LongRestDialog
+              character={character}
+              onFieldChange={handleFieldChange}
+            />
             <RenameCharacterDialog
               id={character.id}
               name={character.name}
