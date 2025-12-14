@@ -25,6 +25,8 @@ type BooleanToggleFieldProps = {
 
   /** Optional tooltip content (shown on hover/focus) */
   tooltip?: React.ReactNode;
+
+  disabled?: boolean;
 };
 
 export function BooleanToggleField({
@@ -35,6 +37,7 @@ export function BooleanToggleField({
   icon,
   hideLabel = false,
   tooltip,
+  disabled = false,
 }: BooleanToggleFieldProps) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
 
@@ -46,6 +49,7 @@ export function BooleanToggleField({
       variant="ghost"
       pressed={checked}
       onPressedChange={onChange}
+      disabled={disabled}
       className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-blue-500 data-[state=on]:*:[svg]:stroke-blue-500"
     >
       {icon ?? <Circle className="h-4 w-4" />}

@@ -1,7 +1,7 @@
 "use client";
 
-import { BooleanToggleField } from "@/components/character/fields/BooleanToggleField";
 import { Heart } from "lucide-react";
+import { ToggleCounter } from "./ToggleCounter";
 
 type DeathSavesProps = {
   successes: number;
@@ -17,18 +17,15 @@ export function DeathSaves({ successes, failures, onChange }: DeathSavesProps) {
         <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
           Success
         </span>
-        <div className="flex">
-          {[0, 1, 2].map((i) => (
-            <BooleanToggleField
-              key={`success-${i}`}
-              label={`Death Save Success ${i + 1}`}
-              hideLabel
-              icon={<Heart className="h-4 w-4" />}
-              checked={successes > i}
-              onChange={(checked) => onChange("successes", checked ? i + 1 : i)}
-            />
-          ))}
-        </div>
+        <ToggleCounter
+          max={3}
+          value={successes}
+          onChange={(next) => onChange("successes", next)}
+          icon={<Heart className="h-4 w-4" />}
+          ariaLabel="Death save success"
+          tooltip="Death save success"
+          className="ml-1"
+        />
       </div>
 
       {/* Failures */}
@@ -36,18 +33,15 @@ export function DeathSaves({ successes, failures, onChange }: DeathSavesProps) {
         <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
           Failure
         </span>
-        <div className="flex gap-1">
-          {[0, 1, 2].map((i) => (
-            <BooleanToggleField
-              key={`failure-${i}`}
-              label={`Death Save Failure ${i + 1}`}
-              hideLabel
-              icon={<Heart className="h-4 w-4 rotate-180 opacity-60" />}
-              checked={failures > i}
-              onChange={(checked) => onChange("failures", checked ? i + 1 : i)}
-            />
-          ))}
-        </div>
+        <ToggleCounter
+          max={3}
+          value={failures}
+          onChange={(next) => onChange("failures", next)}
+          icon={<Heart className="h-4 w-4 rotate-180 opacity-60" />}
+          ariaLabel="Death save failure"
+          tooltip="Death save failure"
+          className="ml-1"
+        />
       </div>
     </div>
   );
