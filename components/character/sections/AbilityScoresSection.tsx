@@ -7,12 +7,14 @@ import {
   initiativeFromDexScore,
   passivePerceptionFromPerceptionMod,
   proficiencyBonusForLevel,
+  skillModifierValue,
 } from "@/lib/derived-stats";
 import { Separator } from "@/components/ui/separator";
 import type { SectionProps } from "./types";
 import { NumberField } from "../fields/NumberField";
 import { ModifierBadge } from "../fields/ModifierBadge";
 import { TextField } from "../fields/TextField";
+import { DerivedStat } from "../fields/DerivedStat";
 
 const ABILITIES = ["str", "dex", "con", "int", "wis", "cha"] as const;
 
@@ -22,20 +24,32 @@ export function AbilityScoresSection({
 }: SectionProps) {
   const level = getByPath(character.data, "identity.level");
   const dexScore = getByPath(character.data, "abilities.dex.score");
-  const perceptionMod = getByPath(character.data, "skills.perception.value");
+  const wisScore = getByPath(character.data, "abilities.wis.score");
+  const perceptionProficient = Boolean(
+    getByPath(character.data, "skills.perception.proficient")
+  );
 
   const proficiencyBonus = proficiencyBonusForLevel(
-    typeof level === "number" ? level : null,
+    typeof level === "number" ? level : null
   );
   const derivedInitiative = initiativeFromDexScore(
-    typeof dexScore === "number" ? dexScore : null,
+    typeof dexScore === "number" ? dexScore : null
+  );
+  const initiativeDisplay =
+    typeof derivedInitiative === "number"
+      ? derivedInitiative >= 0
+        ? `d20 + ${derivedInitiative}`
+        : `d20 - ${Math.abs(derivedInitiative)}`
+      : "d20 + ?";
+
+  const derivedPerceptionSkill = skillModifierValue(
+    typeof wisScore === "number" ? wisScore : null,
+    perceptionProficient,
+    proficiencyBonus
   );
   const derivedPassivePerception = passivePerceptionFromPerceptionMod(
-    typeof perceptionMod === "number" ? perceptionMod : null,
+    derivedPerceptionSkill
   );
-
-  const speed = getByPath(character.data, "core.speed");
-  const size = getByPath(character.data, "core.size");
 
   return (
     <section className="space-y-3">
@@ -44,36 +58,25 @@ export function AbilityScoresSection({
         <Separator className="mt-1" />
       </div>
 
-      {/* Meta row */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-        <NumberField
-          label="Proficiency Bonus"
+      <div className="flex items-center gap-30 justify-center">
+        <DerivedStat
+          label="Proficiency"
           value={proficiencyBonus}
-          disabled
-          width="sm"
-        />
-        <NumberField
-          label="Initiative"
-          value={derivedInitiative}
-          disabled
-          width="sm"
-        />
-        <NumberField
-          label="Speed"
-          value={typeof speed === "number" ? speed : null}
-          onChange={(value) => onFieldChange("core.speed", value)}
-          width="sm"
-        />
-        <TextField
-          label="Size"
-          value={typeof size === "string" ? size : ""}
-          onChange={(value) => onFieldChange("core.size", value)}
+          tooltip="Derived from Level (1–4:+2, 5–8:+3, 9–12:+4, 13–16:+5, 17–20:+6)"
           width="xs"
         />
-        <NumberField
+
+        <DerivedStat
+          label="Initiative"
+          value={initiativeDisplay}
+          tooltip="Initiative modifier = DEX modifier (roll d20 + this in play)"
+          width="xs"
+        />
+
+        <DerivedStat
           label="Passive Perception"
           value={derivedPassivePerception}
-          disabled
+          tooltip="Passive Perception = 10 + Perception modifier"
           width="sm"
         />
       </div>

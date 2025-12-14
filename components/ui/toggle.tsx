@@ -16,6 +16,7 @@ export function Toggle({
   size = "md",
   variant = "default",
   className,
+  onClick: onClickProp,
   ...props
 }: ToggleProps) {
   const [uncontrolled, setUncontrolled] = React.useState(false);
@@ -27,7 +28,7 @@ export function Toggle({
       setUncontrolled(next);
     }
     onPressedChange?.(next);
-    props.onClick?.(event);
+    onClickProp?.(event);
   };
 
   const sizeClasses = size === "sm" ? "h-7 w-7 text-xs" : "h-9 w-9 text-sm";
@@ -41,6 +42,7 @@ export function Toggle({
 
   return (
     <button
+      {...props}
       type="button"
       data-state={pressed ? "on" : "off"}
       className={cn(
@@ -51,7 +53,6 @@ export function Toggle({
       )}
       aria-pressed={pressed}
       onClick={handleClick}
-      {...props}
     />
   );
 }

@@ -11,7 +11,7 @@ type DeathSavesProps = {
 
 export function DeathSaves({ successes, failures, onChange }: DeathSavesProps) {
   return (
-    <div className="space-y-1 flex">
+    <div className="space-y-1 flex flex-col">
       {/* Successes */}
       <div className="flex items-center">
         <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">

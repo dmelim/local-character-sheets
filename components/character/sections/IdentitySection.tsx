@@ -8,7 +8,16 @@ import { NumberField } from "../fields/NumberField";
 import type { SectionProps } from "./types";
 import { BooleanToggleField } from "../fields/BooleanToggleField";
 
-export function IdentitySection({ character, onFieldChange }: SectionProps) {
+type IdentitySectionProps = SectionProps & {
+  /** If false, hide the XP field (milestone tables). Default: true */
+  showXp?: boolean;
+};
+
+export function IdentitySection({
+  character,
+  onFieldChange,
+  showXp = true,
+}: IdentitySectionProps) {
   const name = getByPath(character.data, "identity.characterName");
   const charClass = getByPath(character.data, "identity.class");
   const subclass = getByPath(character.data, "identity.subclass");
@@ -18,6 +27,9 @@ export function IdentitySection({ character, onFieldChange }: SectionProps) {
   const xp = getByPath(character.data, "identity.xp");
 
   const heroicInspiration = getByPath(character.data, "inspiration.heroic");
+
+  const speed = getByPath(character.data, "core.speed");
+  const size = getByPath(character.data, "core.size");
 
   return (
     <section className="space-y-3">
@@ -66,17 +78,33 @@ export function IdentitySection({ character, onFieldChange }: SectionProps) {
           min={1}
           max={20}
         />
-        <NumberField
-          label="XP"
-          value={typeof xp === "number" ? xp : null}
-          onChange={(value) => onFieldChange("identity.xp", value)}
-          width="sm"
-        />
+        {showXp ? (
+          <NumberField
+            label="XP"
+            value={typeof xp === "number" ? xp : null}
+            onChange={(value) => onFieldChange("identity.xp", value)}
+            width="sm"
+          />
+        ) : null}
 
         <BooleanToggleField
           label="Heroic Inspiration"
           checked={Boolean(heroicInspiration)}
           onChange={(checked) => onFieldChange("inspiration.heroic", checked)}
+        />
+
+        <NumberField
+          label="Speed"
+          value={typeof speed === "number" ? speed : null}
+          onChange={(value) => onFieldChange("core.speed", value)}
+          width="sm"
+        />
+
+        <TextField
+          label="Size"
+          value={typeof size === "string" ? size : ""}
+          onChange={(value) => onFieldChange("core.size", value)}
+          width="xs"
         />
       </div>
     </section>

@@ -2,10 +2,14 @@
 
 import * as React from "react";
 import { getByPath } from "@/lib/path-utils";
+import {
+  proficiencyBonusForLevel,
+  skillModifierValue,
+} from "@/lib/derived-stats";
 import { Separator } from "@/components/ui/separator";
 import type { SectionProps } from "./types";
 import { BooleanToggleField } from "../fields/BooleanToggleField";
-import { NumberField } from "../fields/NumberField";
+import { DerivedStat } from "../fields/DerivedStat";
 
 type Skill = {
   key: string;
@@ -59,6 +63,18 @@ const GROUPS: AbilityGroup[] = [
 ];
 
 export function SkillsSection({ character, onFieldChange }: SectionProps) {
+  const levelRaw = getByPath(character.data, "identity.level");
+  const level = typeof levelRaw === "number" ? levelRaw : null;
+  const proficiencyBonus = proficiencyBonusForLevel(level);
+
+  const abilityByGroupTitle: Record<string, string> = {
+    Strength: "str",
+    Dexterity: "dex",
+    Intelligence: "int",
+    Wisdom: "wis",
+    Charisma: "cha",
+  };
+
   return (
     <section className="space-y-3">
       <div>
@@ -68,38 +84,57 @@ export function SkillsSection({ character, onFieldChange }: SectionProps) {
 
       <div className="space-y-5">
         {GROUPS.map((group) => (
-          <div
-            key={group.title}
-            className="space-y-2"
-          >
+          <div key={group.title} className="space-y-2">
             <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {group.title}
             </h3>
-            <div className="grid gap-3 md:grid-cols-2">
-              {group.skills.flatMap((skill) => {
+            <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2">
+              <div />
+              <div className="text-center text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                Proficient
+              </div>
+
+              {group.skills.map((skill) => {
                 const profPath = `skills.${skill.key}.proficient`;
-                const valuePath = `skills.${skill.key}.value`;
-
                 const profLabel = `${skill.label} Proficient`;
-                const valueLabel = skill.label;
 
-                const valueRaw = getByPath(character.data, valuePath);
+                const proficient = Boolean(getByPath(character.data, profPath));
+                const abilityKey = abilityByGroupTitle[group.title];
+                const abilityScore = getByPath(
+                  character.data,
+                  `abilities.${abilityKey}.score`
+                );
+                const derived = skillModifierValue(
+                  typeof abilityScore === "number" ? abilityScore : null,
+                  proficient,
+                  proficiencyBonus
+                );
 
-                return [
-                  <BooleanToggleField
-                    key={profPath}
-                    label={profLabel}
-                    checked={Boolean(getByPath(character.data, profPath))}
-                    onChange={(checked) => onFieldChange(profPath, checked)}
-                  />,
-                  <NumberField
-                    key={valuePath}
-                    label={valueLabel}
-                    value={typeof valueRaw === "number" ? valueRaw : null}
-                    onChange={(value) => onFieldChange(valuePath, value)}
-                    width="xs"
-                  />,
-                ];
+                return (
+                  <React.Fragment key={skill.key}>
+                    <div className="flex items-center gap-3 px-3 py-2">
+                      <span className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
+                        {skill.label}
+                      </span>
+                      <DerivedStat
+                        label={skill.label}
+                        value={derived}
+                        hideLabel
+                        layout="inline"
+                        width="xs"
+                      />
+                    </div>
+                    <div className="flex justify-center">
+                      <BooleanToggleField
+                        label={profLabel}
+                        checked={proficient}
+                        onChange={(checked) => onFieldChange(profPath, checked)}
+                        hideLabel
+                        tooltip={profLabel}
+                      />
+                    </div>
+                  </React.Fragment>
+                );
               })}
             </div>
           </div>
@@ -108,4 +143,3 @@ export function SkillsSection({ character, onFieldChange }: SectionProps) {
     </section>
   );
 }
-

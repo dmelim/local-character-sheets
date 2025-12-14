@@ -14,6 +14,7 @@ type TextFieldProps = {
   id?: string;
   width?: Width;
   disabled?: boolean;
+  className?: string;
 };
 
 const widthClasses: Record<Width, string> = {
@@ -30,6 +31,7 @@ export function TextField({
   id,
   width = "full",
   disabled = false,
+  className,
 }: TextFieldProps) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
 
@@ -43,7 +45,7 @@ export function TextField({
       <Label htmlFor={inputId}>{label}</Label>
       <Input
         id={inputId}
-        className={cn(widthClasses[width])}
+        className={cn(widthClasses[width], className)}
         value={value ?? ""}
         onChange={handleChange}
         disabled={disabled}

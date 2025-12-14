@@ -219,6 +219,7 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
             <IdentitySection
               character={character}
               onFieldChange={handleFieldChange}
+              showXp={false}
             />
             <ArmorHealthSurvivalSection
               character={character}

@@ -29,3 +29,26 @@ export function passivePerceptionFromPerceptionMod(
   return 10 + perceptionMod;
 }
 
+export function savingThrowValue(
+  abilityScore: number | null | undefined,
+  proficient: boolean,
+  proficiencyBonus: number | null | undefined,
+): number | null {
+  const mod = abilityModifier(abilityScore);
+  if (mod == null) return null;
+
+  const pb =
+    typeof proficiencyBonus === "number" && !Number.isNaN(proficiencyBonus)
+      ? proficiencyBonus
+      : 0;
+
+  return mod + (proficient ? pb : 0);
+}
+
+export function skillModifierValue(
+  abilityScore: number | null | undefined,
+  proficient: boolean,
+  proficiencyBonus: number | null | undefined,
+): number | null {
+  return savingThrowValue(abilityScore, proficient, proficiencyBonus);
+}
