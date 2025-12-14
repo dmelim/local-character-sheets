@@ -28,7 +28,11 @@ type AbilityCardConfig = {
 };
 
 const ABILITY_CARDS: AbilityCardConfig[] = [
-  { ability: "str", title: "Strength", skills: [{ key: "athletics", label: "Athletics" }] },
+  {
+    ability: "str",
+    title: "Strength",
+    skills: [{ key: "athletics", label: "Athletics" }],
+  },
   {
     ability: "dex",
     title: "Dexterity",
@@ -107,32 +111,31 @@ export function AbilityScoresSection({
 
   return (
     <section className="space-y-3">
-      <div>
+      <Separator />
+      <div className="flex flex-row gap-10 items-end">
         <h2 className="text-lg font-semibold">Abilities</h2>
-        <Separator className="mt-1" />
-      </div>
+        <div className="flex flex-row gap-20 items-center justify-center">
+          <DerivedStat
+            label="Proficiency"
+            value={proficiencyBonus}
+            tooltip="Derived from Level (1–4:+2, 5–8:+3, 9–12:+4, 13–16:+5, 17–20:+6)"
+            width="xs"
+          />
 
-      <div className="flex flex-row gap-20 items-center justify-center">
-        <DerivedStat
-          label="Proficiency"
-          value={proficiencyBonus}
-          tooltip="Derived from Level (1–4:+2, 5–8:+3, 9–12:+4, 13–16:+5, 17–20:+6)"
-          width="xs"
-        />
+          <DerivedStat
+            label="Initiative"
+            value={derivedInitiative}
+            tooltip="Initiative modifier = DEX modifier (roll d20 + this in play)"
+            width="xs"
+          />
 
-        <DerivedStat
-          label="Initiative"
-          value={initiativeDisplay}
-          tooltip="Initiative modifier = DEX modifier (roll d20 + this in play)"
-          width="xs"
-        />
-
-        <DerivedStat
-          label="Passive Perception"
-          value={derivedPassivePerception}
-          tooltip="Passive Perception = 10 + Perception modifier"
-          width="sm"
-        />
+          <DerivedStat
+            label="Passive Perception"
+            value={derivedPassivePerception}
+            tooltip="Passive Perception = 10 + Perception modifier"
+            width="sm"
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -143,8 +146,14 @@ export function AbilityScoresSection({
           const mod = abilityModifier(score);
 
           const saveProfPath = `saves.${ability}.proficient`;
-          const saveProficient = Boolean(getByPath(character.data, saveProfPath));
-          const saveDerived = savingThrowValue(score, saveProficient, proficiencyBonus);
+          const saveProficient = Boolean(
+            getByPath(character.data, saveProfPath)
+          );
+          const saveDerived = savingThrowValue(
+            score,
+            saveProficient,
+            proficiencyBonus
+          );
 
           return (
             <Card key={ability} className="py-4">
@@ -197,7 +206,9 @@ export function AbilityScoresSection({
                     <BooleanToggleField
                       label={`${title} Save Proficient`}
                       checked={saveProficient}
-                      onChange={(checked) => onFieldChange(saveProfPath, checked)}
+                      onChange={(checked) =>
+                        onFieldChange(saveProfPath, checked)
+                      }
                       hideLabel
                       tooltip="Saving throw proficiency"
                     />
@@ -205,8 +216,14 @@ export function AbilityScoresSection({
 
                   {skills.map((skill) => {
                     const profPath = `skills.${skill.key}.proficient`;
-                    const proficient = Boolean(getByPath(character.data, profPath));
-                    const derived = skillModifierValue(score, proficient, proficiencyBonus);
+                    const proficient = Boolean(
+                      getByPath(character.data, profPath)
+                    );
+                    const derived = skillModifierValue(
+                      score,
+                      proficient,
+                      proficiencyBonus
+                    );
                     return (
                       <React.Fragment key={skill.key}>
                         <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
@@ -225,7 +242,9 @@ export function AbilityScoresSection({
                           <BooleanToggleField
                             label={`${skill.label} Proficient`}
                             checked={proficient}
-                            onChange={(checked) => onFieldChange(profPath, checked)}
+                            onChange={(checked) =>
+                              onFieldChange(profPath, checked)
+                            }
                             hideLabel
                             tooltip={`${skill.label} proficiency`}
                           />
