@@ -21,8 +21,6 @@ import { IdentitySection } from "./sections/IdentitySection";
 import { LanguagesSection } from "./sections/LanguagesSection";
 import { PreparedSpellsSection } from "./sections/PreparedSpellsSection";
 import { ProficienciesSection } from "./sections/ProficienciesSection";
-import { SavingThrowsSection } from "./sections/SavingThrowsSection";
-import { SkillsSection } from "./sections/SkillsSection";
 import { SpeciesTraitsSection } from "./sections/SpeciesTraitsSection";
 import { SpellcastingSummarySection } from "./sections/SpellcastingSummarySection";
 import { SpellSlotsSection } from "./sections/SpellSlotsSection";
@@ -228,14 +226,6 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
           </div>
 
           <AbilityScoresSection
-            character={character}
-            onFieldChange={handleFieldChange}
-          />
-          <SavingThrowsSection
-            character={character}
-            onFieldChange={handleFieldChange}
-          />
-          <SkillsSection
             character={character}
             onFieldChange={handleFieldChange}
           />
