@@ -3,10 +3,10 @@
 import * as React from "react";
 import { getByPath } from "@/lib/path-utils";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
 import { TextField } from "../fields/TextField";
 import { NumberField } from "../fields/NumberField";
 import type { SectionProps } from "./types";
+import { BooleanToggleField } from "../fields/BooleanToggleField";
 
 export function IdentitySection({ character, onFieldChange }: SectionProps) {
   const name = getByPath(character.data, "identity.characterName");
@@ -16,6 +16,8 @@ export function IdentitySection({ character, onFieldChange }: SectionProps) {
   const background = getByPath(character.data, "identity.background");
   const level = getByPath(character.data, "identity.level");
   const xp = getByPath(character.data, "identity.xp");
+
+  const heroicInspiration = getByPath(character.data, "inspiration.heroic");
 
   return (
     <section className="space-y-3">
@@ -70,8 +72,13 @@ export function IdentitySection({ character, onFieldChange }: SectionProps) {
           onChange={(value) => onFieldChange("identity.xp", value)}
           width="sm"
         />
+
+        <BooleanToggleField
+          label="Heroic Inspiration"
+          checked={Boolean(heroicInspiration)}
+          onChange={(checked) => onFieldChange("inspiration.heroic", checked)}
+        />
       </div>
     </section>
   );
 }
-

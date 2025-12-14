@@ -4,6 +4,12 @@ import * as React from "react";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 import { Circle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type BooleanToggleFieldProps = {
   label: string;
@@ -16,6 +22,9 @@ type BooleanToggleFieldProps = {
 
   /** Hide the label visually (still accessible via aria-label) */
   hideLabel?: boolean;
+
+  /** Optional tooltip content (shown on hover/focus) */
+  tooltip?: React.ReactNode;
 };
 
 export function BooleanToggleField({
@@ -25,28 +34,38 @@ export function BooleanToggleField({
   id,
   icon,
   hideLabel = false,
+  tooltip,
 }: BooleanToggleFieldProps) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
 
-  return (
-    <div className="flex items-center justify-center gap-1 px-3 py-2">
-      {!hideLabel && (
-        <Label htmlFor={inputId} className="flex-1">
-          {label}
-        </Label>
-      )}
+  const toggleNode = (
+    <Toggle
+      id={inputId}
+      aria-label={label}
+      size="sm"
+      variant="ghost"
+      pressed={checked}
+      onPressedChange={onChange}
+      className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-blue-500 data-[state=on]:*:[svg]:stroke-blue-500"
+    >
+      {icon ?? <Circle className="h-4 w-4" />}
+    </Toggle>
+  );
 
-      <Toggle
-        id={inputId}
-        aria-label={label}
-        size="sm"
-        variant="ghost"
-        pressed={checked}
-        onPressedChange={onChange}
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-blue-500 data-[state=on]:*:[svg]:stroke-blue-500"
-      >
-        {icon ?? <Circle className="h-4 w-4" />}
-      </Toggle>
+  return (
+    <div className="flex items-center gap-1">
+      {!hideLabel && <Label htmlFor={inputId}>{label}</Label>}
+
+      {tooltip ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>{toggleNode}</TooltipTrigger>
+            <TooltipContent>{tooltip}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        toggleNode
+      )}
     </div>
   );
 }

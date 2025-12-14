@@ -8,6 +8,7 @@ import { TextField } from "../fields/TextField";
 import { BooleanToggleField } from "../fields/BooleanToggleField";
 import type { SectionProps } from "./types";
 import { Shield } from "lucide-react";
+import { DeathSaves } from "../fields/DeathSaves";
 
 export function ArmorHealthSurvivalSection({
   character,
@@ -25,8 +26,6 @@ export function ArmorHealthSurvivalSection({
 
   const deathSuccesses = getByPath(character.data, "deathSaves.successes");
   const deathFailures = getByPath(character.data, "deathSaves.failures");
-
-  const heroicInspiration = getByPath(character.data, "inspiration.heroic");
 
   return (
     <section className="space-y-3">
@@ -49,6 +48,7 @@ export function ArmorHealthSurvivalSection({
               checked={Boolean(shield)}
               onChange={(checked) => onFieldChange("defense.shield", checked)}
               icon={<Shield />}
+              tooltip="Shield"
               hideLabel
             />
           </div>
@@ -107,29 +107,18 @@ export function ArmorHealthSurvivalSection({
           <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Death Saves
           </h3>
-          <div className="grid grid-cols-2 gap-3">
-            <NumberField
-              label="Successes"
-              value={typeof deathSuccesses === "number" ? deathSuccesses : null}
-              onChange={(value) => onFieldChange("deathSaves.successes", value)}
-              width="xs"
-            />
-            <NumberField
-              label="Failures"
-              value={typeof deathFailures === "number" ? deathFailures : null}
-              onChange={(value) => onFieldChange("deathSaves.failures", value)}
-              width="xs"
-            />
-          </div>
-          <div className="pt-1">
-            <BooleanToggleField
-              label="Heroic Inspiration"
-              checked={Boolean(heroicInspiration)}
-              onChange={(checked) =>
-                onFieldChange("inspiration.heroic", checked)
+          <DeathSaves
+            successes={typeof deathSuccesses === "number" ? deathSuccesses : 0}
+            failures={typeof deathFailures === "number" ? deathFailures : 0}
+            onChange={(type, next) => {
+              const clamped = Math.max(0, Math.min(3, next));
+              if (type === "successes") {
+                onFieldChange("deathSaves.successes", clamped);
+              } else {
+                onFieldChange("deathSaves.failures", clamped);
               }
-            />
-          </div>
+            }}
+          />
         </div>
       </div>
     </section>

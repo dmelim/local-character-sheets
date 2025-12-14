@@ -10,11 +10,12 @@ type Width = "xs" | "sm" | "md";
 type NumberFieldProps = {
   label: string;
   value: number | null | undefined;
-  onChange: (value: number | null) => void;
+  onChange?: (value: number | null) => void;
   id?: string;
   width?: Width;
   min?: number;
   max?: number;
+  disabled?: boolean;
 };
 
 const widthClasses: Record<Width, string> = {
@@ -31,21 +32,23 @@ export function NumberField({
   width = "sm",
   min,
   max,
+  disabled = false,
 }: NumberFieldProps) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    if (disabled) return;
     const raw = event.target.value;
     if (raw === "") {
-      onChange(null);
+      onChange?.(null);
       return;
     }
     const parsed = Number(raw);
     if (Number.isNaN(parsed)) {
-      onChange(null);
+      onChange?.(null);
       return;
     }
-    onChange(parsed);
+    onChange?.(parsed);
   };
 
   return (
@@ -62,8 +65,8 @@ export function NumberField({
         max={max}
         value={typeof value === "number" || value === null ? String(value ?? "") : ""}
         onChange={handleChange}
+        disabled={disabled}
       />
     </div>
   );
 }
-

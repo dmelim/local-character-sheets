@@ -2,6 +2,12 @@
 
 import * as React from "react";
 import { getByPath } from "@/lib/path-utils";
+import {
+  abilityModifier,
+  initiativeFromDexScore,
+  passivePerceptionFromPerceptionMod,
+  proficiencyBonusForLevel,
+} from "@/lib/derived-stats";
 import { Separator } from "@/components/ui/separator";
 import type { SectionProps } from "./types";
 import { NumberField } from "../fields/NumberField";
@@ -14,11 +20,22 @@ export function AbilityScoresSection({
   character,
   onFieldChange,
 }: SectionProps) {
-  const initiative = getByPath(character.data, "core.initiative");
+  const level = getByPath(character.data, "identity.level");
+  const dexScore = getByPath(character.data, "abilities.dex.score");
+  const perceptionMod = getByPath(character.data, "skills.perception.value");
+
+  const proficiencyBonus = proficiencyBonusForLevel(
+    typeof level === "number" ? level : null,
+  );
+  const derivedInitiative = initiativeFromDexScore(
+    typeof dexScore === "number" ? dexScore : null,
+  );
+  const derivedPassivePerception = passivePerceptionFromPerceptionMod(
+    typeof perceptionMod === "number" ? perceptionMod : null,
+  );
+
   const speed = getByPath(character.data, "core.speed");
   const size = getByPath(character.data, "core.size");
-  const passivePerception = getByPath(character.data, "core.passivePerception");
-  const proficiency = getByPath(character.data, "core.proficiencyBonus");
 
   return (
     <section className="space-y-3">
@@ -31,14 +48,14 @@ export function AbilityScoresSection({
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         <NumberField
           label="Proficiency Bonus"
-          value={typeof proficiency === "number" ? proficiency : null}
-          onChange={(value) => onFieldChange("core.proficiencyBonus", value)}
+          value={proficiencyBonus}
+          disabled
           width="sm"
         />
         <NumberField
           label="Initiative"
-          value={typeof initiative === "number" ? initiative : null}
-          onChange={(value) => onFieldChange("core.initiative", value)}
+          value={derivedInitiative}
+          disabled
           width="sm"
         />
         <NumberField
@@ -55,10 +72,8 @@ export function AbilityScoresSection({
         />
         <NumberField
           label="Passive Perception"
-          value={
-            typeof passivePerception === "number" ? passivePerception : null
-          }
-          onChange={(value) => onFieldChange("core.passivePerception", value)}
+          value={derivedPassivePerception}
+          disabled
           width="sm"
         />
       </div>
@@ -69,8 +84,7 @@ export function AbilityScoresSection({
           const scorePath = `abilities.${key}.score`;
           const scoreRaw = getByPath(character.data, scorePath);
           const score = typeof scoreRaw === "number" ? scoreRaw : null;
-          const modifier =
-            typeof score === "number" ? Math.floor((score - 10) / 2) : null;
+          const modifier = abilityModifier(score);
 
           const labelMap: Record<(typeof ABILITIES)[number], string> = {
             str: "STR",

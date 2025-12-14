@@ -10,9 +10,10 @@ type Width = "full" | "md" | "sm" | "xs";
 type TextFieldProps = {
   label: string;
   value: string | undefined;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   id?: string;
   width?: Width;
+  disabled?: boolean;
 };
 
 const widthClasses: Record<Width, string> = {
@@ -28,11 +29,13 @@ export function TextField({
   onChange,
   id,
   width = "full",
+  disabled = false,
 }: TextFieldProps) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    onChange(event.target.value ?? "");
+    if (disabled) return;
+    onChange?.(event.target.value ?? "");
   };
 
   return (
@@ -43,6 +46,7 @@ export function TextField({
         className={cn(widthClasses[width])}
         value={value ?? ""}
         onChange={handleChange}
+        disabled={disabled}
       />
     </div>
   );
