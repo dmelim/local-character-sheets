@@ -133,7 +133,8 @@ export function AbilityScoresSection({
             label="Passive Perception"
             value={derivedPassivePerception}
             tooltip="Passive Perception = 10 + Perception modifier"
-            width="sm"
+            width="xs"
+            isSpecial
           />
         </div>
       </div>

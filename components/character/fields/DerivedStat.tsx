@@ -28,6 +28,9 @@ type DerivedStatProps = {
   /** Hide the label (useful when label is rendered elsewhere) */
   hideLabel?: boolean;
 
+  /** If true, do not prefix positive numbers with "+" */
+  isSpecial?: boolean;
+
   className?: string;
 };
 
@@ -37,7 +40,8 @@ const widthClasses: Record<NonNullable<DerivedStatProps["width"]>, string> = {
   md: "min-w-[5rem]",
 };
 
-function formatSigned(value: number) {
+function formatSigned(value: number, isSpecial?: boolean) {
+  if (isSpecial) return `${value}`;
   return value >= 0 ? `+${value}` : `${value}`;
 }
 
@@ -49,11 +53,12 @@ export function DerivedStat({
   width = "sm",
   layout = "vertical",
   hideLabel = false,
+  isSpecial = false,
   className,
 }: DerivedStatProps) {
   const display = (() => {
     if (typeof value === "number") {
-      return Number.isNaN(value) ? "?" : formatSigned(value);
+      return Number.isNaN(value) ? "?" : formatSigned(value, isSpecial);
     }
     if (typeof value === "string") {
       const trimmed = value.trim();
