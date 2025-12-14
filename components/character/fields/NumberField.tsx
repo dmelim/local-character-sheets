@@ -16,6 +16,10 @@ type NumberFieldProps = {
   min?: number;
   max?: number;
   disabled?: boolean;
+  hideLabel?: boolean;
+  layout?: "vertical" | "inline";
+  className?: string;
+  inputClassName?: string;
 };
 
 const widthClasses: Record<Width, string> = {
@@ -33,6 +37,10 @@ export function NumberField({
   min,
   max,
   disabled = false,
+  hideLabel = false,
+  layout = "vertical",
+  className,
+  inputClassName,
 }: NumberFieldProps) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
 
@@ -52,17 +60,24 @@ export function NumberField({
   };
 
   return (
-    <div className="space-y-1">
-      <Label htmlFor={inputId}>{label}</Label>
+    <div
+      className={cn(
+        layout === "inline" ? "flex items-center gap-2" : "space-y-1",
+        className,
+      )}
+    >
+      {!hideLabel ? <Label htmlFor={inputId}>{label}</Label> : null}
       <Input
         id={inputId}
         type="number"
         className={cn(
           widthClasses[width],
           "text-center tabular-nums",
+          inputClassName,
         )}
         min={min}
         max={max}
+        aria-label={hideLabel ? label : undefined}
         value={typeof value === "number" || value === null ? String(value ?? "") : ""}
         onChange={handleChange}
         disabled={disabled}

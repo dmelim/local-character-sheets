@@ -10,9 +10,7 @@ type ModifierBadgeProps = {
 
 export function ModifierBadge({ value, className }: ModifierBadgeProps) {
   const label =
-    typeof value === "number"
-      ? `${value >= 0 ? "+" : ""}${value}`
-      : "—";
+    typeof value === "number" ? `${value >= 0 ? "+" : ""}${value}` : "?";
 
   return (
     <div
@@ -25,4 +23,3 @@ export function ModifierBadge({ value, className }: ModifierBadgeProps) {
     </div>
   );
 }
-

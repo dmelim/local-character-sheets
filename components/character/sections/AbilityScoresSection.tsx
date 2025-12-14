@@ -22,19 +22,13 @@ export function AbilityScoresSection({
   character,
   onFieldChange,
 }: SectionProps) {
-  const level = getByPath(character.data, "identity.level");
-  const dexScore = getByPath(character.data, "abilities.dex.score");
-  const wisScore = getByPath(character.data, "abilities.wis.score");
-  const perceptionProficient = Boolean(
-    getByPath(character.data, "skills.perception.proficient")
-  );
+  const levelRaw = getByPath(character.data, "identity.level");
+  const level = typeof levelRaw === "number" ? levelRaw : null;
+  const proficiencyBonus = proficiencyBonusForLevel(level);
 
-  const proficiencyBonus = proficiencyBonusForLevel(
-    typeof level === "number" ? level : null
-  );
-  const derivedInitiative = initiativeFromDexScore(
-    typeof dexScore === "number" ? dexScore : null
-  );
+  const dexScoreRaw = getByPath(character.data, "abilities.dex.score");
+  const dexScore = typeof dexScoreRaw === "number" ? dexScoreRaw : null;
+  const derivedInitiative = initiativeFromDexScore(dexScore);
   const initiativeDisplay =
     typeof derivedInitiative === "number"
       ? derivedInitiative >= 0
@@ -42,8 +36,13 @@ export function AbilityScoresSection({
         : `d20 - ${Math.abs(derivedInitiative)}`
       : "d20 + ?";
 
+  const wisScoreRaw = getByPath(character.data, "abilities.wis.score");
+  const wisScore = typeof wisScoreRaw === "number" ? wisScoreRaw : null;
+  const perceptionProficient = Boolean(
+    getByPath(character.data, "skills.perception.proficient")
+  );
   const derivedPerceptionSkill = skillModifierValue(
-    typeof wisScore === "number" ? wisScore : null,
+    wisScore,
     perceptionProficient,
     proficiencyBonus
   );
@@ -58,7 +57,7 @@ export function AbilityScoresSection({
         <Separator className="mt-1" />
       </div>
 
-      <div className="flex items-center gap-30 justify-center">
+      <div className="flex flex-row gap-20 items-center justify-center">
         <DerivedStat
           label="Proficiency"
           value={proficiencyBonus}
@@ -81,8 +80,7 @@ export function AbilityScoresSection({
         />
       </div>
 
-      {/* Ability grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="flex flex-col gap-10">
         {ABILITIES.map((key) => {
           const scorePath = `abilities.${key}.score`;
           const scoreRaw = getByPath(character.data, scorePath);
@@ -103,7 +101,7 @@ export function AbilityScoresSection({
               key={key}
               className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 px-3 py-2 dark:border-zinc-800"
             >
-              <div className="flex-1">
+              <div>
                 <NumberField
                   label={`${labelMap[key]} Score`}
                   value={score}
