@@ -140,9 +140,17 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
         });
         setPendingName((prev) => (prev === snapshotName ? null : prev));
         setStatus("saved");
-      } catch (error: any) {
+      } catch (error: unknown) {
         setStatus("error");
-        setErrorMessage(error?.message || "Failed to save changes");
+
+        const message =
+          error instanceof Error
+            ? error.message
+            : typeof error === "string"
+            ? error
+            : "Failed to save changes";
+
+        setErrorMessage(message);
       }
     }, 500);
 
