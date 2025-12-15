@@ -175,4 +175,3 @@ Because character sheets should be:
 - Yours
 
 Happy rolling.
-``` 
