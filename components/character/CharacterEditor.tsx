@@ -242,14 +242,17 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
             character={character}
             onFieldChange={handleFieldChange}
           />
-          <SpeciesTraitsSection
-            character={character}
-            onFieldChange={handleFieldChange}
-          />
-          <FeatsSection
-            character={character}
-            onFieldChange={handleFieldChange}
-          />
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+            <SpeciesTraitsSection
+              character={character}
+              onFieldChange={handleFieldChange}
+            />
+            <FeatsSection
+              character={character}
+              onFieldChange={handleFieldChange}
+            />
+          </div>
+
           <ProficienciesSection
             character={character}
             onFieldChange={handleFieldChange}

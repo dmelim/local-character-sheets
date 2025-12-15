@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import type { SectionProps } from "./types";
 import { BooleanToggleField } from "../fields/BooleanToggleField";
 import { TextAreaField } from "../fields/TextAreaField";
+import { Dumbbell } from "lucide-react";
 
 export function ProficienciesSection({
   character,
@@ -38,6 +39,7 @@ export function ProficienciesSection({
           onChange={(checked) =>
             onFieldChange("proficiencies.armor.light", checked)
           }
+          icon={<Dumbbell className="h-4 w-4" />}
         />
         <BooleanToggleField
           label="Medium Armor Training"
@@ -45,6 +47,7 @@ export function ProficienciesSection({
           onChange={(checked) =>
             onFieldChange("proficiencies.armor.medium", checked)
           }
+          icon={<Dumbbell className="h-4 w-4" />}
         />
         <BooleanToggleField
           label="Heavy Armor Training"
@@ -52,6 +55,7 @@ export function ProficienciesSection({
           onChange={(checked) =>
             onFieldChange("proficiencies.armor.heavy", checked)
           }
+          icon={<Dumbbell className="h-4 w-4" />}
         />
         <BooleanToggleField
           label="Shields Training"
@@ -59,6 +63,7 @@ export function ProficienciesSection({
           onChange={(checked) =>
             onFieldChange("proficiencies.armor.shields", checked)
           }
+          icon={<Dumbbell className="h-4 w-4" />}
         />
       </div>
 
