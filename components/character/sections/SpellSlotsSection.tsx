@@ -65,11 +65,7 @@ export function SpellSlotsSection({ character, onFieldChange }: SectionProps) {
         <h2 className="text-lg font-semibold">Spell Slots</h2>
         <Separator className="mt-1" />
       </div>
-      <div className="grid grid-cols-[3rem_5rem_1fr] items-center gap-x-4 gap-y-3">
-        <div className="text-base font-medium text-foreground ">Level</div>
-        <div className="text-base font-medium text-foreground ">Total</div>
-        <div className="text-base font-medium text-foreground ">Expended</div>
-
+      <div className="grid grid-cols-3 gap-3">
         {levels.map((level) => {
           const totalPath = `spellSlots.level${level}.total`;
           const expendedPath = `spellSlots.level${level}.expended`;
@@ -97,49 +93,65 @@ export function SpellSlotsSection({ character, onFieldChange }: SectionProps) {
           );
 
           return (
-            <React.Fragment key={level}>
-              <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                {level}
+            <div
+              key={level}
+              className="space-y-2 rounded-md border border-zinc-200 p-3 dark:border-zinc-800"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                  Level {level}
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                    Total
+                  </div>
+                  <NumberField
+                    label={`Level ${level} total slots`}
+                    value={total}
+                    onChange={(value) => {
+                      onFieldChange(totalPath, value);
+                      const nextTotal =
+                        typeof value === "number" && !Number.isNaN(value)
+                          ? value
+                          : null;
+                      const nextMax =
+                        typeof nextTotal === "number"
+                          ? Math.max(
+                              0,
+                              Math.min(maxExpendedIcons, Math.floor(nextTotal))
+                            )
+                          : 0;
+                      if (clampedExpended > nextMax) {
+                        onFieldChange(expendedPath, nextMax);
+                      }
+                    }}
+                    width="xs"
+                    hideLabel
+                  />
+                </div>
               </div>
-              <NumberField
-                label={`Level ${level} total slots`}
-                value={total}
-                onChange={(value) => {
-                  onFieldChange(totalPath, value);
-                  const nextTotal =
-                    typeof value === "number" && !Number.isNaN(value)
-                      ? value
-                      : null;
-                  const nextMax =
-                    typeof nextTotal === "number"
-                      ? Math.max(
-                          0,
-                          Math.min(maxExpendedIcons, Math.floor(nextTotal))
-                        )
-                      : 0;
-                  if (clampedExpended > nextMax) {
-                    onFieldChange(expendedPath, nextMax);
-                  }
-                }}
-                width="xs"
-                hideLabel
-              />
-              <ToggleCounter
-                max={maxExpendedIcons}
-                enabledMax={enabledMaxForLevel}
-                value={clampedExpended}
-                onChange={(nextCount) => {
-                  const clampedNext = Math.max(
-                    0,
-                    Math.min(enabledMaxForLevel, nextCount)
-                  );
-                  onFieldChange(expendedPath, clampedNext);
-                }}
-                icon={<LoaderPinwheel className="h-4 w-4" />}
-                ariaLabel={`Level ${level} slots expended`}
-                tooltip="Expended slots"
-              />
-            </React.Fragment>
+
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                  Expended
+                </div>
+                <ToggleCounter
+                  max={maxExpendedIcons}
+                  enabledMax={enabledMaxForLevel}
+                  value={clampedExpended}
+                  onChange={(nextCount) => {
+                    const clampedNext = Math.max(
+                      0,
+                      Math.min(enabledMaxForLevel, nextCount)
+                    );
+                    onFieldChange(expendedPath, clampedNext);
+                  }}
+                  icon={<LoaderPinwheel className="h-4 w-4" />}
+                  ariaLabel={`Level ${level} slots expended`}
+                  tooltip="Expended slots"
+                />
+              </div>
+            </div>
           );
         })}
       </div>
