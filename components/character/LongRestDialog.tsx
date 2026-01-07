@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,7 +25,7 @@ export function LongRestDialog({
   character,
   onFieldChange,
 }: LongRestDialogProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleApply = () => {
     const updates = buildLongRestUpdates(character.data);

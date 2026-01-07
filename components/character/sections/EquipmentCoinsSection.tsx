@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { getByPath } from "@/lib/path-utils";
 import { Separator } from "@/components/ui/separator";
 import type { SectionProps } from "./types";
@@ -65,4 +64,3 @@ export function EquipmentCoinsSection({ character, onFieldChange }: SectionProps
     </section>
   );
 }
-

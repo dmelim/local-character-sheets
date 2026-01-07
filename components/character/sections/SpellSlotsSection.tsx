@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useMemo } from "react";
 import { getByPath } from "@/lib/path-utils";
 import { Separator } from "@/components/ui/separator";
 import type { SectionProps } from "./types";
@@ -21,12 +21,12 @@ const MAX_EXPENDED_ICONS_BY_LEVEL: Record<number, number> = {
 };
 
 export function SpellSlotsSection({ character, onFieldChange }: SectionProps) {
-  const levels = React.useMemo(
+  const levels = useMemo(
     () => Array.from({ length: 9 }, (_, i) => i + 1),
     []
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     for (const level of levels) {
       const totalPath = `spellSlots.level${level}.total`;
       const expendedPath = `spellSlots.level${level}.expended`;

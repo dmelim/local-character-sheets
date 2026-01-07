@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type { ChangeEventHandler } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -44,7 +44,7 @@ export function NumberField({
 }: NumberFieldProps) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (disabled) return;
     const raw = event.target.value;
     if (raw === "") {

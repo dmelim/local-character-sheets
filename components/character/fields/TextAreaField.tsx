@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type { ChangeEventHandler } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
@@ -21,7 +21,7 @@ export function TextAreaField({
 }: TextAreaFieldProps) {
   const inputId = id ?? label.replace(/\s+/g, "-").toLowerCase();
 
-  const handleChange: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => {
+  const handleChange: ChangeEventHandler<HTMLTextAreaElement> = (event) => {
     onChange(event.target.value ?? "");
   };
 
@@ -37,4 +37,3 @@ export function TextAreaField({
     </div>
   );
 }
-

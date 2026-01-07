@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState, type FormEventHandler } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,16 +22,16 @@ type RenameCharacterDialogProps = {
 
 export function RenameCharacterDialog({ id, name, version }: RenameCharacterDialogProps) {
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(name);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(name);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(name);
   }, [name]);
 
-  const handleSubmit: React.FormEventHandler = async (event) => {
+  const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
     if (!value.trim()) {
       setError("Please enter a name.");
@@ -109,4 +109,3 @@ export function RenameCharacterDialog({ id, name, version }: RenameCharacterDial
     </Dialog>
   );
 }
-

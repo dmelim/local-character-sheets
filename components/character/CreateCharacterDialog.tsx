@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState, type FormEventHandler } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,12 +16,12 @@ import { Label } from "@/components/ui/label";
 
 export function CreateCharacterDialog() {
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
-  const [name, setName] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit: React.FormEventHandler = async (event) => {
+  const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
     if (!name.trim()) {
       setError("Please enter a name.");
@@ -95,4 +95,3 @@ export function CreateCharacterDialog() {
     </Dialog>
   );
 }
-

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import type { AppSettings } from "@/lib/settings-store";
@@ -12,9 +12,9 @@ type SettingsEditorProps = {
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 export function SettingsEditor({ initialSettings }: SettingsEditorProps) {
-  const [settings, setSettings] = React.useState<AppSettings>(initialSettings);
-  const [status, setStatus] = React.useState<SaveStatus>("idle");
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const [settings, setSettings] = useState<AppSettings>(initialSettings);
+  const [status, setStatus] = useState<SaveStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleToggle = async (checked: boolean) => {
     const optimistic: AppSettings = {

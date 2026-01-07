@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState, type ReactElement, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ type DeleteCharacterDialogProps = {
   id: string;
   name: string;
   redirectTo?: string;
-  trigger?: React.ReactElement;
+  trigger?: ReactElement;
 };
 
 export function DeleteCharacterDialog({
@@ -26,11 +26,11 @@ export function DeleteCharacterDialog({
   trigger,
 }: DeleteCharacterDialogProps) {
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const stopPropagation = (event: React.SyntheticEvent) => {
+  const stopPropagation = (event: SyntheticEvent) => {
     event.stopPropagation();
   };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Character } from "@/lib/character-types";
@@ -38,13 +38,13 @@ type SaveStatus = "idle" | "saving" | "saved" | "error" | "stale";
 
 export function CharacterEditor({ initialCharacter, settings }: CharacterEditorProps) {
   const router = useRouter();
-  const [character, setCharacter] = React.useState<Character>(initialCharacter);
-  const [pending, setPending] = React.useState<Record<string, unknown>>({});
-  const [pendingName, setPendingName] = React.useState<string | null>(null);
-  const [status, setStatus] = React.useState<SaveStatus>("idle");
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const [character, setCharacter] = useState<Character>(initialCharacter);
+  const [pending, setPending] = useState<Record<string, unknown>>({});
+  const [pendingName, setPendingName] = useState<string | null>(null);
+  const [status, setStatus] = useState<SaveStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCharacter(initialCharacter);
     setPending({});
     setPendingName(null);
@@ -69,7 +69,7 @@ export function CharacterEditor({ initialCharacter, settings }: CharacterEditorP
     setPending((prev) => ({ ...prev, [path]: value }));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const hasPending = Object.keys(pending).length > 0 || pendingName != null;
     if (!hasPending) return;
 

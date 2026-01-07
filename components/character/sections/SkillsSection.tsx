@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { Fragment } from "react";
 import { getByPath } from "@/lib/path-utils";
 import {
   proficiencyBonusForLevel,
@@ -111,7 +111,7 @@ export function SkillsSection({ character, onFieldChange }: SectionProps) {
                 );
 
                 return (
-                  <React.Fragment key={skill.key}>
+                  <Fragment key={skill.key}>
                     <div className="flex items-center gap-3 px-3 py-2">
                       <span className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
                         {skill.label}
@@ -133,7 +133,7 @@ export function SkillsSection({ character, onFieldChange }: SectionProps) {
                         tooltip={profLabel}
                       />
                     </div>
-                  </React.Fragment>
+                  </Fragment>
                 );
               })}
             </div>

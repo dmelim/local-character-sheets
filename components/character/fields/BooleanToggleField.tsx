@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type { ReactNode } from "react";
 import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 import { Circle } from "lucide-react";
@@ -18,13 +18,13 @@ type BooleanToggleFieldProps = {
   id?: string;
 
   /** Optional icon to render inside the toggle */
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 
   /** Hide the label visually (still accessible via aria-label) */
   hideLabel?: boolean;
 
   /** Optional tooltip content (shown on hover/focus) */
-  tooltip?: React.ReactNode;
+  tooltip?: ReactNode;
 
   disabled?: boolean;
 };

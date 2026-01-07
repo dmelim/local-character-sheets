@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { getByPath } from "@/lib/path-utils";
 import { abilityModifier, proficiencyBonusForLevel } from "@/lib/derived-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

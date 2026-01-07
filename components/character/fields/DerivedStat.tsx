@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -14,7 +14,7 @@ type DerivedStatProps = {
   value: number | null | undefined | string;
 
   /** Optional explanation shown on hover/focus (e.g. "10 + Perception") */
-  tooltip?: React.ReactNode;
+  tooltip?: ReactNode;
 
   /** Display style */
   variant?: "pill" | "box";

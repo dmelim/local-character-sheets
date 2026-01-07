@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { getByPath } from "@/lib/path-utils";
 import {
   proficiencyBonusForLevel,

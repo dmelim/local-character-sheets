@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { Fragment, useEffect } from "react";
 import { getByPath } from "@/lib/path-utils";
 import {
   abilityModifier,
@@ -113,13 +113,13 @@ export function AbilityScoresSection({
 
   const startingSanity = startingSanityFromWisScore(wisScore);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!showForsakenCovenant) return;
     if (sanityRaw !== undefined) return;
     onFieldChange("mind.sanity", startingSanity);
   }, [onFieldChange, sanityRaw, showForsakenCovenant, startingSanity]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!showForsakenCovenant) return;
     if (stressRaw !== undefined) return;
     onFieldChange("mind.stress", 0);
@@ -263,7 +263,7 @@ export function AbilityScoresSection({
                       proficiencyBonus
                     );
                     return (
-                      <React.Fragment key={skill.key}>
+                      <Fragment key={skill.key}>
                         <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
                           {skill.label}
                         </div>
@@ -287,7 +287,7 @@ export function AbilityScoresSection({
                             tooltip={`${skill.label} proficiency`}
                           />
                         </div>
-                      </React.Fragment>
+                      </Fragment>
                     );
                   })}
                 </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { BooleanToggleField } from "./BooleanToggleField";
 
@@ -18,13 +18,13 @@ type ToggleCounterProps = {
   onChange: (nextCount: number) => void;
 
   /** Icon rendered inside each toggle */
-  icon: React.ReactNode;
+  icon: ReactNode;
 
   /** Used for aria-labels (e.g. "Level 1 expended") */
   ariaLabel: string;
 
   /** Optional tooltip shown on hover/focus */
-  tooltip?: React.ReactNode;
+  tooltip?: ReactNode;
 
   className?: string;
 };

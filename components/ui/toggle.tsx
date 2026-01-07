@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
+import { useState, type ButtonHTMLAttributes, type MouseEventHandler } from "react";
 import { cn } from "@/lib/utils";
 
-type ToggleProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type ToggleProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   pressed?: boolean;
   onPressedChange?: (pressed: boolean) => void;
   size?: "sm" | "md";
@@ -19,10 +19,10 @@ export function Toggle({
   onClick: onClickProp,
   ...props
 }: ToggleProps) {
-  const [uncontrolled, setUncontrolled] = React.useState(false);
+  const [uncontrolled, setUncontrolled] = useState(false);
   const pressed = pressedProp ?? uncontrolled;
 
-  const handleClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const next = !pressed;
     if (pressedProp === undefined) {
       setUncontrolled(next);
