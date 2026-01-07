@@ -1,6 +1,9 @@
 import { listCharacters } from "@/lib/character-store";
 import { CreateCharacterDialog } from "@/components/character/CreateCharacterDialog";
 import { CharacterCard } from "@/components/character/CharacterCard";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -17,10 +20,17 @@ export default async function Home() {
               Local/LAN D&amp;D 2024 character sheets.
             </p>
           </div>
-          <CreateCharacterDialog />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button asChild variant="outline">
+              <Link href="/settings">Settings</Link>
+            </Button>
+            <CreateCharacterDialog />
+          </div>
         </div>
         <p className="text-xs text-zinc-500 dark:text-zinc-500">
-          Characters are stored as JSON in <code>data/characters/</code> on disk.
+          Characters are stored as JSON in <code>data/characters/</code> on
+          disk.
         </p>
       </header>
 
@@ -31,10 +41,7 @@ export default async function Home() {
       ) : (
         <section className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {characters.map((character) => (
-            <CharacterCard
-              key={character.id}
-              character={character}
-            />
+            <CharacterCard key={character.id} character={character} />
           ))}
         </section>
       )}

@@ -9,6 +9,7 @@ import {
   proficiencyBonusForLevel,
   savingThrowValue,
   skillModifierValue,
+  startingSanityFromWisScore,
 } from "@/lib/derived-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -80,7 +81,9 @@ const ABILITY_CARDS: AbilityCardConfig[] = [
 export function AbilityScoresSection({
   character,
   onFieldChange,
+  settings,
 }: SectionProps) {
+  const showForsakenCovenant = Boolean(settings?.forsakenCovenant);
   const levelRaw = getByPath(character.data, "identity.level");
   const level = typeof levelRaw === "number" ? levelRaw : null;
   const proficiencyBonus = proficiencyBonusForLevel(level);
@@ -88,12 +91,6 @@ export function AbilityScoresSection({
   const dexScoreRaw = getByPath(character.data, "abilities.dex.score");
   const dexScore = typeof dexScoreRaw === "number" ? dexScoreRaw : null;
   const derivedInitiative = initiativeFromDexScore(dexScore);
-  const initiativeDisplay =
-    typeof derivedInitiative === "number"
-      ? derivedInitiative >= 0
-        ? `d20 + ${derivedInitiative}`
-        : `d20 - ${Math.abs(derivedInitiative)}`
-      : "d20 + ?";
 
   const wisScoreRaw = getByPath(character.data, "abilities.wis.score");
   const wisScore = typeof wisScoreRaw === "number" ? wisScoreRaw : null;
@@ -108,6 +105,25 @@ export function AbilityScoresSection({
   const derivedPassivePerception = passivePerceptionFromPerceptionMod(
     derivedPerceptionSkill
   );
+
+  const sanityRaw = getByPath(character.data, "mind.sanity");
+  const sanity = typeof sanityRaw === "number" ? sanityRaw : null;
+  const stressRaw = getByPath(character.data, "mind.stress");
+  const stress = typeof stressRaw === "number" ? stressRaw : null;
+
+  const startingSanity = startingSanityFromWisScore(wisScore);
+
+  React.useEffect(() => {
+    if (!showForsakenCovenant) return;
+    if (sanityRaw !== undefined) return;
+    onFieldChange("mind.sanity", startingSanity);
+  }, [onFieldChange, sanityRaw, showForsakenCovenant, startingSanity]);
+
+  React.useEffect(() => {
+    if (!showForsakenCovenant) return;
+    if (stressRaw !== undefined) return;
+    onFieldChange("mind.stress", 0);
+  }, [onFieldChange, showForsakenCovenant, stressRaw]);
 
   return (
     <section className="space-y-3">
@@ -136,6 +152,27 @@ export function AbilityScoresSection({
             width="xs"
             isSpecial
           />
+
+          {showForsakenCovenant ? (
+            <>
+              <NumberField
+                label="Sanity"
+                value={sanity}
+                onChange={(value) => onFieldChange("mind.sanity", value)}
+                width="xs"
+                min={0}
+              />
+
+              <NumberField
+                label="Stress"
+                value={stress}
+                onChange={(value) => onFieldChange("mind.stress", value)}
+                width="xs"
+                min={0}
+                max={12}
+              />
+            </>
+          ) : null}
         </div>
       </div>
 

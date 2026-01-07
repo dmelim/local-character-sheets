@@ -161,11 +161,11 @@ export function WeaponsSection({ character, onFieldChange }: SectionProps) {
       </div>
 
       <div className="space-y-2 rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
-        <div className="grid grid-cols-[minmax(10rem,1.2fr)_minmax(6rem,0.7fr)_minmax(10rem,1fr)_minmax(12rem,1.4fr)_auto] items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400">
-          <div>Name</div>
+        <div className="hidden grid-cols-[minmax(10rem,1.2fr)_minmax(6rem,0.7fr)_minmax(10rem,1fr)_minmax(12rem,1.4fr)_auto] items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400 sm:grid">
+          <div className="px-3">Name</div>
           <div className="text-center">Atk Bonus / DC</div>
-          <div>Damage &amp; Type</div>
-          <div>Notes</div>
+          <div className="px-3">Damage &amp; Type</div>
+          <div className="px-3">Notes</div>
           <div />
         </div>
 
@@ -173,7 +173,7 @@ export function WeaponsSection({ character, onFieldChange }: SectionProps) {
           {rows.map((row, index) => (
             <div
               key={row.id}
-              className="grid grid-cols-[minmax(10rem,1.2fr)_minmax(6rem,0.7fr)_minmax(10rem,1fr)_minmax(12rem,1.4fr)_auto] items-center gap-2"
+              className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(10rem,1.2fr)_minmax(6rem,0.7fr)_minmax(10rem,1fr)_minmax(12rem,1.4fr)_auto] sm:items-center"
             >
               <Input
                 value={row.name}
@@ -221,6 +221,7 @@ export function WeaponsSection({ character, onFieldChange }: SectionProps) {
                 onClick={() => handleRemoveRow(row.id)}
                 aria-label={`Remove row ${index + 1}`}
                 title="Remove row"
+                className="justify-self-end sm:justify-self-auto"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

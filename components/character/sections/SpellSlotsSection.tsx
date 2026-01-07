@@ -65,7 +65,7 @@ export function SpellSlotsSection({ character, onFieldChange }: SectionProps) {
         <h2 className="text-lg font-semibold">Spell Slots</h2>
         <Separator className="mt-1" />
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {levels.map((level) => {
           const totalPath = `spellSlots.level${level}.total`;
           const expendedPath = `spellSlots.level${level}.expended`;
@@ -97,11 +97,11 @@ export function SpellSlotsSection({ character, onFieldChange }: SectionProps) {
               key={level}
               className="space-y-2 rounded-md border border-zinc-200 p-3 dark:border-zinc-800"
             >
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
                   Level {level}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-2 sm:justify-start">
                   <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
                     Total
                   </div>
@@ -131,7 +131,7 @@ export function SpellSlotsSection({ character, onFieldChange }: SectionProps) {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
                   Expended
                 </div>

@@ -52,3 +52,13 @@ export function skillModifierValue(
 ): number | null {
   return savingThrowValue(abilityScore, proficient, proficiencyBonus);
 }
+
+export function startingSanityFromWisScore(
+  wisScore: number | null | undefined,
+): number {
+  const mod = abilityModifier(wisScore);
+  if (mod == null) return 10;
+
+  const derived = 10 + mod;
+  return mod < 0 ? Math.max(8, derived) : derived;
+}

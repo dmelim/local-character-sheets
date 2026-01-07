@@ -45,6 +45,10 @@ export const fields: FieldDef[] = [
   // Heroic Inspiration
   { path: "inspiration.heroic", label: "Heroic Inspiration", type: "boolean", section: "Heroic Inspiration" },
 
+  // Sanity & Stress
+  { path: "mind.sanity", label: "Sanity", type: "number", section: "Sanity & Stress" },
+  { path: "mind.stress", label: "Stress", type: "number", section: "Sanity & Stress" },
+
   // Ability Scores (modifiers are derived in the UI)
   { path: "abilities.str.score", label: "STR Score", type: "number", section: "Ability Scores" },
   { path: "abilities.dex.score", label: "DEX Score", type: "number", section: "Ability Scores" },

@@ -16,13 +16,23 @@ type DeleteCharacterDialogProps = {
   id: string;
   name: string;
   redirectTo?: string;
+  trigger?: React.ReactElement;
 };
 
-export function DeleteCharacterDialog({ id, name, redirectTo }: DeleteCharacterDialogProps) {
+export function DeleteCharacterDialog({
+  id,
+  name,
+  redirectTo,
+  trigger,
+}: DeleteCharacterDialogProps) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+
+  const stopPropagation = (event: React.SyntheticEvent) => {
+    event.stopPropagation();
+  };
 
   const handleDelete = async () => {
     setLoading(true);
@@ -48,20 +58,21 @@ export function DeleteCharacterDialog({ id, name, redirectTo }: DeleteCharacterD
     }
   };
 
+  const triggerNode = trigger ?? (
+    <Button variant="ghost" size="sm">
+      Delete
+    </Button>
+  );
+
   return (
     <Dialog
       open={open}
       onOpenChange={setOpen}
     >
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-        >
-          Delete
-        </Button>
+        {triggerNode}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent onClick={stopPropagation} onPointerDown={stopPropagation}>
         <DialogHeader>
           <DialogTitle>Delete Character</DialogTitle>
         </DialogHeader>

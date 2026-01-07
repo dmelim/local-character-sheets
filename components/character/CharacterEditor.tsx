@@ -27,14 +27,16 @@ import { SpellcastingSummarySection } from "./sections/SpellcastingSummarySectio
 import { SpellSlotsSection } from "./sections/SpellSlotsSection";
 import { AppearanceSection } from "./sections/AppearanceSection";
 import { WeaponsSection } from "./sections/WeaponsSection";
+import type { AppSettings } from "@/lib/settings-store";
 
 type CharacterEditorProps = {
   initialCharacter: Character;
+  settings: AppSettings;
 };
 
 type SaveStatus = "idle" | "saving" | "saved" | "error" | "stale";
 
-export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
+export function CharacterEditor({ initialCharacter, settings }: CharacterEditorProps) {
   const router = useRouter();
   const [character, setCharacter] = React.useState<Character>(initialCharacter);
   const [pending, setPending] = React.useState<Record<string, unknown>>({});
@@ -241,6 +243,7 @@ export function CharacterEditor({ initialCharacter }: CharacterEditorProps) {
           <AbilityScoresSection
             character={character}
             onFieldChange={handleFieldChange}
+            settings={settings}
           />
           <WeaponsSection
             character={character}

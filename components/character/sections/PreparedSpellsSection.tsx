@@ -198,7 +198,7 @@ export function PreparedSpellsSection({
       </div>
 
       <div className="space-y-2 rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
-        <div className="grid grid-cols-[minmax(3rem,0.4fr)_minmax(10rem,1.2fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)_minmax(7rem,0.7fr)_minmax(12rem,1.3fr)_auto] items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+        <div className="hidden grid-cols-[minmax(3rem,0.4fr)_minmax(10rem,1.2fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)_minmax(7rem,0.7fr)_minmax(12rem,1.3fr)_auto] items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400 sm:grid">
           <div className="text-center">Level</div>
           <div>Name</div>
           <div className="text-center">Casting Time</div>
@@ -212,7 +212,7 @@ export function PreparedSpellsSection({
           {rows.map((row, index) => (
             <div
               key={row.id}
-              className="grid grid-cols-[minmax(3rem,0.4fr)_minmax(10rem,1.2fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)_minmax(7rem,0.7fr)_minmax(12rem,1.3fr)_auto] items-center gap-2"
+              className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(3rem,0.4fr)_minmax(10rem,1.2fr)_minmax(8rem,0.8fr)_minmax(8rem,0.8fr)_minmax(7rem,0.7fr)_minmax(12rem,1.3fr)_auto] sm:items-center"
             >
               <Input
                 value={row.level}
@@ -322,6 +322,7 @@ export function PreparedSpellsSection({
                 onClick={() => handleRemoveRow(row.id)}
                 aria-label={`Remove spell row ${index + 1}`}
                 title="Remove spell row"
+                className="justify-self-end sm:justify-self-auto"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

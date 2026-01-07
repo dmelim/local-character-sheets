@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { loadCharacter } from "@/lib/character-store";
+import { loadSettings } from "@/lib/settings-store";
 import { CharacterEditor } from "@/components/character/CharacterEditor";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,7 @@ type PageProps = {
 
 export default async function CharacterPage({ params }: PageProps) {
   const { id } = await params;
+  const settings = await loadSettings();
   let character = null;
   try {
     character = await loadCharacter(id);
@@ -28,7 +30,7 @@ export default async function CharacterPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 py-8">
-      <CharacterEditor initialCharacter={character} />
+      <CharacterEditor initialCharacter={character} settings={settings} />
     </main>
   );
 }
